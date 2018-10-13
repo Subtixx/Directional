@@ -1,7 +1,5 @@
-using System;
 using System.Drawing;
 using System.Windows.Forms;
-using System.Windows.Forms.VisualStyles;
 
 namespace Directional.Game
 {
@@ -12,9 +10,10 @@ namespace Directional.Game
             Top,
             Left,
             Right,
-            Down
+            Down,
+            Max // Last element.
         }
-        
+
         private readonly int _fallSpeed = 3;
         public readonly Direction MovingDirection;
 
@@ -38,25 +37,25 @@ namespace Directional.Game
         public void Show(Form form, int left)
         {
             Button.Visible = true;
-            if (MovingDirection == Direction.Top)
+            switch (MovingDirection)
             {
-                Button.Top = 0;
-                Button.Left = left;
-            }
-            else if (MovingDirection == Direction.Down)
-            {
-                Button.Top = form.Height;
-                Button.Left = left;
-            }
-            else if(MovingDirection == Direction.Right)
-            {
-                Button.Left = form.Width;
-                Button.Top = left;
-            }
-            else
-            {
-                Button.Top = left;
-                Button.Left = 0;
+                case Direction.Top:
+                default:
+                    Button.Top = 0;
+                    Button.Left = left;
+                    break;
+                case Direction.Down:
+                    Button.Top = form.Height;
+                    Button.Left = left;
+                    break;
+                case Direction.Right:
+                    Button.Left = form.Width;
+                    Button.Top = left;
+                    break;
+                case Direction.Left:
+                    Button.Top = left;
+                    Button.Left = 0;
+                    break;
             }
 
             Button.Show();
@@ -65,14 +64,22 @@ namespace Directional.Game
 
         public void Fall()
         {
-            if(MovingDirection == Direction.Top)
-                Button.Top = Button.Top + _fallSpeed;
-            else if(MovingDirection == Direction.Down)
-                Button.Top = Button.Top - _fallSpeed;
-            else if(MovingDirection == Direction.Right)
-                Button.Left = Button.Left - _fallSpeed;
-            else
-                Button.Left = Button.Left + _fallSpeed;
+            switch (MovingDirection)
+            {
+                default:
+                case Direction.Top:
+                    Button.Top = Button.Top + _fallSpeed;
+                    break;
+                case Direction.Down:
+                    Button.Top = Button.Top - _fallSpeed;
+                    break;
+                case Direction.Right:
+                    Button.Left = Button.Left - _fallSpeed;
+                    break;
+                case Direction.Left:
+                    Button.Left = Button.Left + _fallSpeed;
+                    break;
+            }
         }
 
         public void Dispose()
