@@ -24,15 +24,15 @@ namespace Directional.Game
         private readonly Timer _mainTimer;
 
         private readonly Random _random;
-        private readonly List<Box> _snowflakes;
-        private readonly int _snowflakeSize;
+        private readonly List<Box> _boxes;
+        private readonly int _boxSize;
 
         private int _hitAnimationDelay;
         private int _level;
         private int _lives;
         private int _maxSpawnSpeed;
         private int _score;
-        private int _scorePerSnowflake;
+        private int _scorePerBox;
         private int _ticks;
         private int _timeToNextSpawn;
 
@@ -42,12 +42,12 @@ namespace Directional.Game
             _mainTimer = new Timer();
             _mainTimer.Tick += Tick;
             _mainTimer.Interval = Interval;
-            _snowflakes = new List<Box>();
+            _boxes = new List<Box>();
             _timeToNextSpawn = 0;
             _maxSpawnSpeed = 35;
-            _snowflakeSize = 50;
+            _boxSize = 50;
             _level = 1;
-            _scorePerSnowflake = 100;
+            _scorePerBox = 100;
             _lives = StartingLives;
 
             _random = new Random();
@@ -93,11 +93,11 @@ namespace Directional.Game
 
             _ticks++;
 
-            // TODO: fix this so the snowflakes get smaller by a equasion/algorithm
+            // TODO: fix this so the boxes get smaller by a equasion/algorithm
             if (_ticks % NextLevelUpgrade == 0)
             {
                 _level++;
-                _scorePerSnowflake = 100 * _level;
+                _scorePerBox = 100 * _level;
                 _maxSpawnSpeed--; // TODO: should not be able to hit 0
             }
 
@@ -109,15 +109,15 @@ namespace Directional.Game
 
                 var movingDir = (Box.Direction) _random.Next(0, Enum.GetValues(typeof(Box.Direction)).Length+1);
                 var left = movingDir == 0
-                    ? _random.Next(Width - _snowflakeSize)
-                    : _random.Next(Height - _snowflakeSize);
+                    ? _random.Next(Width - _boxSize)
+                    : _random.Next(Height - _boxSize);
                 var color = _boxColors[_random.Next(_boxColors.Count)];
 
                 SpawnNewBox(left, color, _maxSpawnSpeed, _maxSpawnSpeed, movingDir);
             }
 
             var lifeLost = false;
-            _snowflakes.ForEach(s =>
+            _boxes.ForEach(s =>
             {
                 s.Fall();
 
@@ -143,15 +143,15 @@ namespace Directional.Game
                 }
             });
 
-            if (lifeLost) ClearSnowflakes();
+            if (lifeLost) ClearBoxes();
 
             UpdateLabels();
         }
 
-        private void ClearSnowflakes()
+        private void ClearBoxes()
         {
-            _snowflakes.ForEach(RemoveSnowflake);
-            _snowflakes.Clear();
+            _boxes.ForEach(RemoveBox);
+            _boxes.Clear();
         }
 
         /// <summary>
@@ -159,25 +159,25 @@ namespace Directional.Game
         /// </summary>
         /// <param name="startPosition">The starting position left aligned</param>
         /// <param name="color"></param>
-        /// <param name="size">The beginning size of the snowflake</param>
+        /// <param name="size">The beginning size of the box</param>
         /// <param name="fallSpeed">^^</param>
         /// <param name="movingDir"></param>
         private void SpawnNewBox(int startPosition, Color color, int size, int fallSpeed, Box.Direction movingDir)
         {
-            var snowflake = new Box(color, size, fallSpeed, movingDir);
-            snowflake.Button.Click += (_, __) =>
+            var box = new Box(color, size, fallSpeed, movingDir);
+            box.Button.Click += (_, __) =>
             {
-                RemoveSnowflake(snowflake);
-                _snowflakes.Remove(snowflake);
-                _score += _scorePerSnowflake;
+                RemoveBox(box);
+                _boxes.Remove(box);
+                _score += _scorePerBox;
             };
-            _snowflakes.Add(snowflake);
-            Controls.Add(snowflake.Button);
+            _boxes.Add(box);
+            Controls.Add(box.Button);
 
-            snowflake.Show(this, startPosition);
+            box.Show(this, startPosition);
         }
 
-        private void RemoveSnowflake(Box box)
+        private void RemoveBox(Box box)
         {
             box.Dispose();
             Controls.Remove(box.Button);

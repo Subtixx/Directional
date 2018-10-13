@@ -81,7 +81,7 @@ namespace Directional.Game
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "Form1";
             this.ShowIcon = false;
-            this.Text = "Snowflakes";
+            this.Text = "DirectIOnal";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.Click += new System.EventHandler(this.Form1_Click);
             this.ResumeLayout(false);
