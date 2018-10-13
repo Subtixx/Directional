@@ -2,25 +2,24 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
-using Snowflakes.Game.Models;
 
-namespace Snowflakes.Game
+namespace Directional.Game
 {
     public partial class Form1 : Form, IDisposable
     {
         private const int Interval = 50;
         private const int NextLevelUpgrade = 5 * Interval;
         private const int StartingLives = 3;
-        private int _level;
-        private int _lives;
         private readonly Timer _mainTimer;
-        private int _maxSpawnSpeed;
 
         private readonly Random _random;
-        private int _score;
-        private int _scorePerSnowflake;
         private readonly List<Snowflake> _snowflakes;
         private readonly int _snowflakeSize;
+        private int _level;
+        private int _lives;
+        private int _maxSpawnSpeed;
+        private int _score;
+        private int _scorePerSnowflake;
         private int _ticks;
         private int _timeToNextSpawn;
 

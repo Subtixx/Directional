@@ -1,4 +1,4 @@
-namespace Snowflakes.Game
+namespace Directional.Game
 {
     partial class Form1
     {
