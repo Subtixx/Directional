@@ -4,11 +4,6 @@ using System.Drawing;
 using System.Windows.Forms;
 using Snowflakes.Game.Models;
 
-// TODO: Make the playfield dynamic, by making the form non-resizable, setting a small size that gets bigger and bigger the higher your level is!
-// TODO: Highscores with a txt file.
-// TODO: Make buttons appear from all 4 sides
-// TODO: Make a gameover screen
-// TODO: Make the game harder by adding snowflakes which have to be clicked multiple times =)
 namespace Snowflakes.Game
 {
     public partial class Form1 : Form, IDisposable
