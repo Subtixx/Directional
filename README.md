@@ -1,6 +1,4 @@
-# Directional Game
-
-![logo](https://user-images.githubusercontent.com/20743379/46910691-bcfb9780-cf48-11e8-9a79-3c4a7c1b112b.png)
+![logo](./logo.png)
 
 This game was made in a stream by Zivo and myself using Live Share. It was made in roughly an hour while he was talking and we were throwing ideas around.
 
