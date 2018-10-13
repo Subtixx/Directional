@@ -10,8 +10,7 @@ namespace Directional.Game
             Top,
             Left,
             Right,
-            Down,
-            Max // Last element.
+            Down
         }
 
         private readonly int _fallSpeed = 3;

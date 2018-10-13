@@ -107,7 +107,7 @@ namespace Directional.Game
             {
                 _timeToNextSpawn = _random.Next(_maxSpawnSpeed);
 
-                var movingDir = (Box.Direction) _random.Next(0, (int) Box.Direction.Max);
+                var movingDir = (Box.Direction) _random.Next(0, Enum.GetValues(typeof(Box.Direction)).Length+1);
                 var left = movingDir == 0
                     ? _random.Next(Width - _snowflakeSize)
                     : _random.Next(Height - _snowflakeSize);
