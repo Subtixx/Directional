@@ -1,6 +1,6 @@
- ☐ Rename Solution Items to represent new "Directional" Name
+ ✔ Rename Solution Items to represent new "Directional" Name @done (18-10-14 00:42)
  ☐ Make the playfield dynamic, by making the form non-resizable, setting a small size that gets bigger and bigger the higher your level is!
  ☐ Highscores with a txt file.
- ☐ Make buttons appear from all 4 sides
+ ✔ Make buttons appear from all 4 sides @done (18-10-14 01:18)
  ☐ Make a gameover screen
  ☐ Make the game harder by adding snowflakes which have to be clicked multiple times =)
