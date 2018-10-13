@@ -10,10 +10,12 @@ namespace Directional.Game
         private const int Interval = 50;
         private const int NextLevelUpgrade = 5 * Interval;
         private const int StartingLives = 3;
+        private const int HitAnimationTime = 5;
+
         private readonly Timer _mainTimer;
 
         private readonly Random _random;
-        private readonly List<Snowflake> _snowflakes;
+        private readonly List<Box> _snowflakes;
         private readonly int _snowflakeSize;
         private int _level;
         private int _lives;
@@ -23,13 +25,24 @@ namespace Directional.Game
         private int _ticks;
         private int _timeToNextSpawn;
 
+        private int _hitAnimationDelay;
+
+        // TODO: Figure out colors
+        private readonly List<Color> _boxColors = new List<Color>()
+        {
+            Color.Black,
+            Color.Blue,
+            Color.Red,
+            Color.Aqua,
+        };
+
         public Form1()
         {
             InitializeComponent();
             _mainTimer = new Timer();
             _mainTimer.Tick += Tick;
             _mainTimer.Interval = Interval;
-            _snowflakes = new List<Snowflake>();
+            _snowflakes = new List<Box>();
             _timeToNextSpawn = 0;
             _maxSpawnSpeed = 35;
             _snowflakeSize = 50;
@@ -70,6 +83,18 @@ namespace Directional.Game
                 return;
             }
 
+            if (_hitAnimationDelay > 0)
+            {
+                _hitAnimationDelay--;
+                // TODO: fade to white?
+            }
+
+            if (_hitAnimationDelay <= 0 && BackColor != Color.White)
+            {
+                BackColor = Color.White;
+                _hitAnimationDelay = 0;
+            }
+
             _ticks++;
 
             // TODO: fix this so the snowflakes get smaller by a equasion/algorithm
@@ -85,12 +110,12 @@ namespace Directional.Game
             if (_timeToNextSpawn <= 0)
             {
                 _timeToNextSpawn = _random.Next(_maxSpawnSpeed);
-                var left = _random.Next(Width - _snowflakeSize);
-                var red = _random.Next(255);
-                var green = _random.Next(255);
-                var blue = _random.Next(255);
-                var color = Color.FromArgb(red, green, blue);
-                SpawnNewSnowflake(left, color, _maxSpawnSpeed, _maxSpawnSpeed);
+                
+                var movingDir = (Box.Direction)_random.Next(0, (int)Box.Direction.Down);
+                var left = movingDir == 0 ? _random.Next(Width - _snowflakeSize) : _random.Next(Height - _snowflakeSize);
+                var color = _boxColors[_random.Next(_boxColors.Count)];
+                
+                SpawnNewBox(left, color, _maxSpawnSpeed, _maxSpawnSpeed, movingDir);
             }
 
             var lifeLost = false;
@@ -98,7 +123,19 @@ namespace Directional.Game
             {
                 s.Fall();
 
-                if (s.Bottom >= Height) // You lose
+                if (s.Bottom >= Height && s.MovingDirection == Box.Direction.Top) // You lose
+                {
+                    LoseLife();
+                    lifeLost = true;
+                }else if (s.Bottom <= 0 && s.MovingDirection == Box.Direction.Down) // You lose
+                {
+                    LoseLife();
+                    lifeLost = true;
+                }else if (s.Top >= Width && s.MovingDirection == Box.Direction.Left) // You lose
+                {
+                    LoseLife();
+                    lifeLost = true;
+                }else if (s.Top <= 0 && s.MovingDirection == Box.Direction.Right) // You lose
                 {
                     LoseLife();
                     lifeLost = true;
@@ -112,19 +149,20 @@ namespace Directional.Game
 
         private void ClearSnowflakes()
         {
-            _snowflakes.ForEach(s => RemoveSnowflake(s));
+            _snowflakes.ForEach(RemoveSnowflake);
             _snowflakes.Clear();
         }
 
         /// <summary>
-        ///     Spawns new snowflake
+        ///     Spawns a new box
         /// </summary>
-        /// <param name="startLeftPosition">The starting position left aligned</param>
+        /// <param name="startPosition">The starting position left aligned</param>
         /// <param name="size">The beginning size of the snowflake</param>
         /// <param name="fallSpeed">^^</param>
-        private void SpawnNewSnowflake(int startLeftPosition, Color color, int size, int fallSpeed)
+        /// <param name="movingDir"></param>
+        private void SpawnNewBox(int startPosition, Color color, int size, int fallSpeed, Box.Direction movingDir)
         {
-            var snowflake = new Snowflake(this, color, size, fallSpeed);
+            var snowflake = new Box(color, size, fallSpeed, movingDir);
             snowflake.Button.Click += (_, __) =>
             {
                 RemoveSnowflake(snowflake);
@@ -134,18 +172,19 @@ namespace Directional.Game
             _snowflakes.Add(snowflake);
             Controls.Add(snowflake.Button);
 
-            snowflake.Show(startLeftPosition);
+            snowflake.Show(this, startPosition);
         }
 
-        private void RemoveSnowflake(Snowflake snowflake)
+        private void RemoveSnowflake(Box box)
         {
-            snowflake.Dispose();
-            Controls.Remove(snowflake.Button);
+            box.Dispose();
+            Controls.Remove(box.Button);
         }
 
         private void LoseLife()
         {
-            // For indication clear screen T_T?
+            _hitAnimationDelay = HitAnimationTime;
+            BackColor = Color.Red;
             _lives--;
             UpdateLabels();
 
